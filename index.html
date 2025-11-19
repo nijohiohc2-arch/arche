@@ -1,0 +1,797 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Arche | 당신의 세계관을 설계합니다</title>
+    <style>
+        /* --- 기본 설정 --- */
+        :root {
+            --bg-color: #111111;
+            --text-color: #f0f0f0;
+            --accent-color: #d4af37; /* 골드 */
+            --secondary-bg: #1a1a1a;
+            --gray-text: #a0a0a0;
+            --border-color: #2b2b2b;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, Roboto, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.6;
+        }
+        a { text-decoration: none; color: inherit; }
+        ul { list-style: none; }
+
+        /* --- 유틸리티 --- */
+        .container { max-width: 1100px; margin: 0 auto; padding: 0 20px; }
+        .section { padding: 100px 0; }
+        .section-title { font-size: 2.5rem; margin-bottom: 1rem; font-weight: 700; text-align: center; }
+        .section-subtitle { text-align: center; color: var(--gray-text); margin-bottom: 3rem; }
+        .btn {
+            display: inline-block;
+            padding: 15px 30px;
+            background-color: var(--accent-color);
+            color: #000;
+            font-weight: bold;
+            border-radius: 2px;
+            transition: 0.3s;
+            cursor: pointer;
+            border: none;
+            font-size: 0.95rem;
+            letter-spacing: 0.04em;
+        }
+        .btn:hover { background-color: #fff; }
+        .tag {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 999px;
+            border: 1px solid var(--border-color);
+            font-size: 0.75rem;
+            color: var(--gray-text);
+            margin-bottom: 10px;
+        }
+
+        /* --- 헤더 --- */
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 40px;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 10;
+            background: linear-gradient(to bottom, rgba(0,0,0,0.9), rgba(0,0,0,0));
+        }
+        .logo { font-size: 1.3rem; font-weight: 600; letter-spacing: 3px; color: var(--accent-color); text-transform: uppercase; }
+        nav ul { display: flex; gap: 20px; }
+        nav a { font-size: 0.85rem; opacity: 0.8; transition: 0.2s; text-transform: uppercase; letter-spacing: 0.08em; }
+        nav a:hover { opacity: 1; color: var(--accent-color); }
+
+        /* --- 히어로 섹션 --- */
+        .hero {
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 0 20px;
+            background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.8)), 
+                url('https://images.unsplash.com/photo-1451187580459-43490279c0fa?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80') 
+                no-repeat center center/cover;
+        }
+        .hero-inner {
+            max-width: 720px;
+            margin-top: 40px;
+        }
+        .hero-kicker {
+            font-size: 0.85rem;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            color: var(--gray-text);
+            margin-bottom: 20px;
+        }
+        .hero h1 { font-size: 3.2rem; margin-bottom: 20px; line-height: 1.2; }
+        .hero h1 span { color: var(--accent-color); }
+        .hero p { font-size: 1.05rem; color: #ddd; margin-bottom: 35px; }
+        .hero-subtext { font-size: 0.9rem; color: var(--gray-text); margin-top: 15px; }
+
+        .hero-btn-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            justify-content: center;
+            align-items: center;
+        }
+        .btn-outline {
+            padding: 13px 26px;
+            border-radius: 2px;
+            border: 1px solid var(--border-color);
+            background: transparent;
+            color: var(--text-color);
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        .btn-outline:hover {
+            border-color: var(--accent-color);
+            color: var(--accent-color);
+        }
+
+        /* --- 문제 제기 섹션 --- */
+        .problem { background-color: var(--secondary-bg); }
+        .problem-grid { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); 
+            gap: 30px; 
+        }
+        .problem-card { 
+            background: #151515;
+            padding: 24px 22px;
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            position: relative;
+            overflow: hidden;
+        }
+        .problem-card::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(circle at top left, rgba(212,175,55,0.25), transparent 55%);
+            opacity: 0;
+            transition: 0.3s;
+            pointer-events: none;
+        }
+        .problem-card:hover::before {
+            opacity: 1;
+        }
+        .problem-card h3 {
+            font-size: 1.1rem;
+            margin-bottom: 10px;
+        }
+        .problem-card p {
+            font-size: 0.9rem;
+            color: var(--gray-text);
+        }
+        .problem-label {
+            font-size: 0.8rem;
+            color: var(--accent-color);
+            margin-bottom: 6px;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+        }
+
+        /* --- Arche 소개 섹션 --- */
+        .solution { background-color: #111111; }
+        .solution-inner {
+            display: grid;
+            grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr);
+            gap: 40px;
+            align-items: start;
+        }
+        .solution-main h3 {
+            font-size: 1.5rem;
+            margin-bottom: 14px;
+        }
+        .solution-main p {
+            font-size: 0.95rem;
+            color: var(--gray-text);
+            margin-bottom: 14px;
+        }
+        .solution-highlight {
+            margin-top: 12px;
+            padding: 14px 16px;
+            border-radius: 10px;
+            border: 1px solid var(--border-color);
+            background: linear-gradient(120deg, rgba(212,175,55,0.08), rgba(255,255,255,0.02));
+            font-size: 0.9rem;
+        }
+        .pill-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 16px;
+        }
+        .pill {
+            padding: 5px 12px;
+            border-radius: 999px;
+            border: 1px solid var(--border-color);
+            font-size: 0.78rem;
+            color: var(--gray-text);
+        }
+
+        .solution-side {
+            border-radius: 14px;
+            border: 1px solid var(--border-color);
+            padding: 20px 18px;
+            background: radial-gradient(circle at top, rgba(212,175,55,0.18), transparent 60%);
+            font-size: 0.9rem;
+        }
+        .solution-side h4 {
+            font-size: 1rem;
+            margin-bottom: 10px;
+        }
+        .check-list {
+            margin-top: 10px;
+        }
+        .check-list li {
+            font-size: 0.87rem;
+            color: var(--gray-text);
+            margin-bottom: 8px;
+        }
+        .check-list li::before {
+            content: "• ";
+            color: var(--accent-color);
+        }
+
+        /* --- 프로세스 섹션 --- */
+        .process { background-color: var(--secondary-bg); }
+        .process-steps {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+            gap: 24px;
+        }
+        .step-card {
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            padding: 22px 20px;
+            background: #141414;
+        }
+        .step-number {
+            width: 26px;
+            height: 26px;
+            border-radius: 999px;
+            border: 1px solid var(--accent-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.78rem;
+            color: var(--accent-color);
+            margin-bottom: 10px;
+        }
+        .step-card h3 {
+            font-size: 1rem;
+            margin-bottom: 8px;
+        }
+        .step-card p {
+            font-size: 0.88rem;
+            color: var(--gray-text);
+        }
+
+        /* --- 프로그램 섹션 --- */
+        .programs { background-color: #111111; }
+        .program-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 26px;
+        }
+        .program-card {
+            border-radius: 14px;
+            border: 1px solid var(--border-color);
+            padding: 22px 20px 24px;
+            background: #151515;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        .program-card h3 {
+            font-size: 1.1rem;
+            margin-bottom: 6px;
+        }
+        .program-tagline {
+            font-size: 0.85rem;
+            color: var(--gray-text);
+            margin-bottom: 14px;
+        }
+        .program-meta {
+            font-size: 0.8rem;
+            color: var(--gray-text);
+            margin-bottom: 14px;
+        }
+        .program-meta span {
+            display: inline-block;
+            margin-right: 8px;
+        }
+        .program-price {
+            font-size: 0.95rem;
+            color: var(--accent-color);
+            margin-bottom: 14px;
+        }
+        .program-card ul {
+            font-size: 0.85rem;
+            color: var(--gray-text);
+            margin-bottom: 18px;
+        }
+        .program-card ul li {
+            margin-bottom: 6px;
+        }
+        .program-card ul li::before {
+            content: "– ";
+            color: var(--gray-text);
+        }
+
+        /* --- About 섹션 --- */
+        .about { background-color: var(--secondary-bg); }
+        .about-inner {
+            display: grid;
+            grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
+            gap: 40px;
+            align-items: start;
+        }
+        .about-inner h3 {
+            font-size: 1.4rem;
+            margin-bottom: 12px;
+        }
+        .about-inner p {
+            font-size: 0.92rem;
+            color: var(--gray-text);
+            margin-bottom: 10px;
+        }
+        .about-label {
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.14em;
+            color: var(--accent-color);
+            margin-bottom: 8px;
+        }
+        .about-list {
+            margin-top: 10px;
+            font-size: 0.9rem;
+            color: var(--gray-text);
+        }
+        .about-list li {
+            margin-bottom: 6px;
+        }
+        .about-list li::before {
+            content: "• ";
+            color: var(--accent-color);
+        }
+
+        /* --- CTA / 연락 섹션 --- */
+        .cta {
+            background: radial-gradient(circle at top, rgba(212,175,55,0.12), #111111 55%);
+            text-align: center;
+        }
+        .cta-box {
+            max-width: 620px;
+            margin: 0 auto;
+            border-radius: 16px;
+            border: 1px solid var(--border-color);
+            padding: 40px 24px;
+            background: rgba(0,0,0,0.6);
+        }
+        .cta-box h2 {
+            font-size: 1.7rem;
+            margin-bottom: 12px;
+        }
+        .cta-box p {
+            font-size: 0.94rem;
+            color: var(--gray-text);
+            margin-bottom: 20px;
+        }
+        .cta-note {
+            margin-top: 14px;
+            font-size: 0.82rem;
+            color: var(--gray-text);
+        }
+
+        /* --- 푸터 --- */
+        footer {
+            border-top: 1px solid var(--border-color);
+            padding: 18px 20px 26px;
+            font-size: 0.8rem;
+            color: var(--gray-text);
+        }
+        .footer-inner {
+            max-width: 1100px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        .footer-links a {
+            margin-left: 14px;
+            font-size: 0.8rem;
+            opacity: 0.8;
+        }
+        .footer-links a:hover {
+            opacity: 1;
+            color: var(--accent-color);
+        }
+
+        /* --- 반응형 --- */
+        @media (max-width: 900px) {
+            header {
+                padding: 16px 20px;
+            }
+            .hero h1 {
+                font-size: 2.4rem;
+            }
+            .solution-inner,
+            .about-inner {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .hero-inner {
+                margin-top: 60px;
+            }
+            .hero h1 {
+                font-size: 2rem;
+            }
+            .hero p {
+                font-size: 0.95rem;
+            }
+            nav ul {
+                display: none; /* 간단히: 모바일에선 헤더 메뉴 숨김 (필요시 나중에 햄버거로 확장) */
+            }
+            .section {
+                padding: 70px 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 헤더 -->
+    <header>
+        <div class="logo">ARCHE</div>
+        <nav>
+            <ul>
+                <li><a href="#problem">Why</a></li>
+                <li><a href="#solution">Arche</a></li>
+                <li><a href="#process">Process</a></li>
+                <li><a href="#programs">Program</a></li>
+                <li><a href="#contact">Contact</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- 히어로 -->
+    <section class="hero" id="top">
+        <div class="hero-inner">
+            <div class="hero-kicker">WORLDVIEW STUDIO</div>
+            <h1>
+                <span>Arche</span>는<br>
+                당신의 세계관을 설계합니다.
+            </h1>
+            <p>
+                인생의 방향, 일의 의미, 나라는 존재의 구조가 흐릿해질 때<br>
+                Arche는 당신 안에 숨겨진 ‘원형(Archetype)’을 끌어올려
+                하나의 세계관으로 정렬해 줍니다.
+            </p>
+
+            <div class="hero-btn-group">
+                <a href="#contact" class="btn">1:1 Arche 세션 문의하기</a>
+                <a href="#solution" class="btn-outline">Arche가 궁금하다</a>
+            </div>
+
+            <div class="hero-subtext">
+                “나는 누구로 기억되고 싶은가?”<br>
+                이 질문에 선명하게 답할 수 있도록, 당신의 내면 구조를 함께 설계합니다.
+            </div>
+        </div>
+    </section>
+
+    <!-- 문제 제기 섹션 -->
+    <section class="section problem" id="problem">
+        <div class="container">
+            <h2 class="section-title">당신에게 이런 감각은 없었나요?</h2>
+            <p class="section-subtitle">
+                정보는 넘치는데, 정작 “나는 어떤 세계를 살고 있는가”에 대한 문장은 비어 있을 때.<br>
+                Arche는 바로 그 지점을 다룹니다.
+            </p>
+
+            <div class="problem-grid">
+                <div class="problem-card">
+                    <div class="problem-label">01</div>
+                    <h3>내가 무엇을 중심으로 살아야 하는지 모호하다</h3>
+                    <p>
+                        하고 싶은 것도 많고, 잠재력도 느껴지지만<br>
+                        한 줄로 정의되는 “나의 축”이 무엇인지 말하기 어렵습니다.
+                    </p>
+                </div>
+
+                <div class="problem-card">
+                    <div class="problem-label">02</div>
+                    <h3>삶의 경험들이 하나의 이야기로 묶이지 않는다</h3>
+                    <p>
+                        직장, 관계, 영성, 돈, 창작… 모두 따로 노는 느낌입니다.<br>
+                        ‘이 모든 것이 결국 무엇을 향한 여정인지’ 연결 언어가 필요합니다.
+                    </p>
+                </div>
+
+                <div class="problem-card">
+                    <div class="problem-label">03</div>
+                    <h3>새 시대의 변화 속에서 나의 포지션이 흐릿하다</h3>
+                    <p>
+                        AI, Web3, 새로운 정치·경제 질서 속에서<br>
+                        “나는 무엇을 대표하는 사람인가?”라는 질문이 이제 더 이상 미룰 수 없게 느껴집니다.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Arche 소개 섹션 -->
+    <section class="section solution" id="solution">
+        <div class="container">
+            <h2 class="section-title">Arche는 무엇을 하는 곳인가요?</h2>
+            <p class="section-subtitle">
+                Arche는 단순한 진로 상담, 코칭, 멘토링이 아닙니다.<br>
+                “당신이라는 세계” 전체를 하나의 설계도로 정렬하는 <b>세계관 스튜디오</b>입니다.
+            </p>
+
+            <div class="solution-inner">
+                <div class="solution-main">
+                    <span class="tag">Definition</span>
+                    <h3>당신의 삶을 관통하는 하나의 문장을 발견합니다.</h3>
+                    <p>
+                        Arche 세션에서는 당신의 과거 경험, 현재의 갈등, 미래의 감각을
+                        하나의 축으로 꿰어냅니다.  
+                        그 축은 직업, 프로젝트, 관계, 신앙, 정치적 감각까지 모두를
+                        관통하는 “당신만의 세계관 언어”가 됩니다.
+                    </p>
+                    <p>
+                        이 언어는 당신을 위해 만들어진 브랜드 문장이자,
+                        앞으로 선택과 거절을 결정하는 <b>기준점</b>이 됩니다.
+                    </p>
+
+                    <div class="solution-highlight">
+                        Arche의 결과물은 단지 좋은 말이 적힌 노트가 아닙니다.<br>
+                        <b>“나는 어떤 세계를 짓고 있는 사람인가”</b>에 대한
+                        구조적 설계도이자, 삶의 다음 3~5년을 여는 기준 언어입니다.
+                    </div>
+
+                    <div class="pill-row">
+                        <div class="pill">세계관 설계</div>
+                        <div class="pill">정체성 구조화</div>
+                        <div class="pill">언어·네이밍 디자인</div>
+                        <div class="pill">미래 포지셔닝</div>
+                    </div>
+                </div>
+
+                <aside class="solution-side">
+                    <h4>이런 분께 특히 적합합니다</h4>
+                    <ul class="check-list">
+                        <li>멀티포텐셜/다방면 탐구형인데, 한 줄로 설명이 안 되는 사람</li>
+                        <li>영성, 정치적 감각, 시스템 사고를 동시에 품고 있는 사람</li>
+                        <li>2025~2030년을 인생의 큰 전환점으로 보고 준비하는 사람</li>
+                        <li>“내 언어, 내 세계관”으로 사람과 세상을 움직이고 싶은 사람</li>
+                    </ul>
+                </aside>
+            </div>
+        </div>
+    </section>
+
+    <!-- 프로세스 섹션 -->
+    <section class="section process" id="process">
+        <div class="container">
+            <h2 class="section-title">Arche 세션은 이렇게 진행됩니다</h2>
+            <p class="section-subtitle">
+                복잡한 이력을 단순화하는 것이 아니라,  
+                <b>당신의 복잡성을 유지한 채로 구조화</b>하는 과정입니다.
+            </p>
+
+            <div class="process-steps">
+                <div class="step-card">
+                    <div class="step-number">1</div>
+                    <h3>Pre-Questionnaire</h3>
+                    <p>
+                        사전 질문지를 통해 당신의 삶의 궤적, 현재의 고민,  
+                        미래에 대한 감각을 간단히 정리합니다.  
+                        (작성 자체가 이미 첫 번째 정렬 작업이 됩니다.)
+                    </p>
+                </div>
+                <div class="step-card">
+                    <div class="step-number">2</div>
+                    <h3>Deep Arche Session</h3>
+                    <p>
+                        1:1 온라인 세션(약 90분)에서  
+                        당신의 이야기, 상징, 반복되는 패턴들을 깊이 있게 탐색합니다.  
+                        이때 떠오르는 키워드와 문장들을 함께 포착합니다.
+                    </p>
+                </div>
+                <div class="step-card">
+                    <div class="step-number">3</div>
+                    <h3>Worldview Mapping</h3>
+                    <p>
+                        세션 내용을 바탕으로  
+                        <b>세계관 지도(Worldview Map)</b>와  
+                        핵심 문장, 세계관 키워드 구조를 정리하여 드립니다.
+                    </p>
+                </div>
+                <div class="step-card">
+                    <div class="step-number">4</div>
+                    <h3>Integration & Next Step</h3>
+                    <p>
+                        정리된 세계관을 실제 삶에 어떻게 녹일지,  
+                        직업·비즈니스·프로젝트·관계에 어떻게 적용할지  
+                        구체적인 다음 스텝을 함께 설계합니다.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 프로그램 섹션 -->
+    <section class="section programs" id="programs">
+        <div class="container">
+            <h2 class="section-title">Arche 프로그램</h2>
+            <p class="section-subtitle">
+                시작은 작게, 하지만 방향은 깊게.  
+                현재는 아래 프로그램부터 순차적으로 오픈합니다.
+            </p>
+
+            <div class="program-grid">
+                <div class="program-card">
+                    <span class="tag">1:1</span>
+                    <h3>Deep Arche Session</h3>
+                    <p class="program-tagline">
+                        당신만을 위한 90분 세계관 설계 대화
+                    </p>
+                    <div class="program-meta">
+                        <span>· 90분 온라인 (Zoom)</span><br>
+                        <span>· 사전 질문지 + 세션 요약 노트 제공</span>
+                    </div>
+                    <div class="program-price">
+                        가격 및 일정: 개별 안내 (문의 후 조율)
+                    </div>
+                    <ul>
+                        <li>삶의 주요 전환점과 패턴 구조화</li>
+                        <li>핵심 세계관 문장 1~2개 도출</li>
+                        <li>키워드·이미지·상징 언어 정리</li>
+                    </ul>
+                    <a href="#contact" class="btn-outline">세션 문의하기</a>
+                </div>
+
+                <div class="program-card">
+                    <span class="tag">Coming Soon</span>
+                    <h3>Arche Worldview Map</h3>
+                    <p class="program-tagline">
+                        당신의 세계를 한 장에 담는 구조적 설계도
+                    </p>
+                    <div class="program-meta">
+                        <span>· Deep Arche Session 후 선택 가능</span><br>
+                        <span>· PDF 리포트 + 구조도 제공</span>
+                    </div>
+                    <div class="program-price">
+                        출시 예정 프로그램입니다.
+                    </div>
+                    <ul>
+                        <li>개인 세계관 지도(마인드맵 형태)</li>
+                        <li>향후 3~5년 방향성 제안</li>
+                        <li>프로젝트·비즈니스 아이디어 연결</li>
+                    </ul>
+                    <button class="btn-outline" disabled>준비 중입니다</button>
+                </div>
+
+                <div class="program-card">
+                    <span class="tag">Group</span>
+                    <h3>Arche Circle</h3>
+                    <p class="program-tagline">
+                        세계관을 가진 사람들의 작은 동심원
+                    </p>
+                    <div class="program-meta">
+                        <span>· 소규모 온라인 그룹</span><br>
+                        <span>· 서로의 세계관을 증폭시키는 대화</span>
+                    </div>
+                    <div class="program-price">
+                        파일럿 그룹 예정 (문의 시 먼저 소식 전달)
+                    </div>
+                    <ul>
+                        <li>각자의 Arche 문장 공유 및 피드백</li>
+                        <li>시대 변화 속 포지션 나누기</li>
+                        <li>협업·프로젝트 싹을 함께 발견</li>
+                    </ul>
+                    <a href="#contact" class="btn-outline">대기 리스트 등록 문의</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- About 섹션 -->
+    <section class="section about" id="about">
+        <div class="container">
+            <h2 class="section-title">Behind Arche</h2>
+            <p class="section-subtitle">
+                Arche는 “한 사람의 세계관이 한 시대를 열 수 있다”는 믿음에서 시작되었습니다.
+            </p>
+
+            <div class="about-inner">
+                <div>
+                    <div class="about-label">Why Arche?</div>
+                    <h3>정체성, 영성, 시스템을 동시에 다루는 세계관 스튜디오</h3>
+                    <p>
+                        어떤 사람들은 더 이상 “하나의 직업”으로 설명되지 않습니다.  
+                        영성과 정치적 감각, 디지털 기술과 생태계 설계,  
+                        사람과 시스템을 동시에 보는 눈을 가진 이들입니다.
+                    </p>
+                    <p>
+                        Arche는 이런 사람들을 위해 특별히 설계되었습니다.  
+                        당신의 혼란은 결함이 아니라,  
+                        <b>새로운 시대를 미리 감지한 사람에게 찾아오는 자연스러운 진통</b>일 수 있습니다.
+                    </p>
+                </div>
+
+                <div>
+                    <div class="about-label">What you’ll get</div>
+                    <ul class="about-list">
+                        <li>“나는 어떤 세계를 짓는 사람인가?”에 대한 한 문장</li>
+                        <li>당신의 삶을 관통하는 키워드·상징 언어 구조</li>
+                        <li>앞으로 3~5년을 정렬시키는 세계관 기준점</li>
+                        <li>AI·정치·경제 변화 속에서의 개인적 포지션 감각</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA / Contact -->
+    <section class="section cta" id="contact">
+        <div class="container">
+            <div class="cta-box">
+                <h2>지금, 당신의 세계관을 설계할 타이밍이라면</h2>
+                <p>
+                    “나를 설명하는 언어가 필요하다”는 감각이 들었다면  
+                    이미 Arche를 시작할 준비가 된 것입니다.  
+                    간단한 소개와 현재 고민을 적어 보내 주세요.  
+                    가능 여부와 진행 방식에 대해 개인적으로 답변 드립니다.
+                </p>
+
+                <!-- 이메일/폼 링크는 실제 사용하는 주소로 바꾸면 됩니다 -->
+                <a href="mailto:your-email@example.com?subject=%5BArche%5D%201%3A1%20세션%20문의" class="btn">
+                    이메일로 세션 문의하기
+                </a>
+
+                <div class="cta-note">
+                    * 아직 초기 단계의 스튜디오이기 때문에,  
+                    한 번에 받을 수 있는 인원이 많지 않습니다.<br>
+                    * 구체적인 일정·진행 방식·비용은 메일로 개별 안내 드립니다.
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 푸터 -->
+    <footer>
+        <div class="footer-inner">
+            <div>© <span id="year"></span> Arche. All rights reserved.</div>
+            <div class="footer-links">
+                <a href="#top">Top</a>
+                <a href="#about">About</a>
+                <a href="#programs">Program</a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- 간단 스크립트: 부드러운 스크롤 + 연도 표시 -->
+    <script>
+        // 현재 연도 표시
+        document.getElementById('year').textContent = new Date().getFullYear();
+
+        // 부드러운 스크롤
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                const targetId = this.getAttribute('href');
+                if (targetId.length > 1) {
+                    e.preventDefault();
+                    const target = document.querySelector(targetId);
+                    if (target) {
+                        window.scrollTo({
+                            top: target.offsetTop - 70,
+                            behavior: 'smooth'
+                        });
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html>
